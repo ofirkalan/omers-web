@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BACKROAD — אביזרי עור וינטג' לאופנועים</title>
+<meta name="description" content="אביזרי עור לאופנועים בעבודת יד: רצועות ופאדים למיכל דלק, גריפים, תיקי צד ותיקי גב. BACKROAD.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@400;700;800&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<!-- ================= גיבור ================= -->
+<section class="hero">
+  <div class="hero-inner wrap on-dark">
+    <div class="seal">
+      <span>עבודת&nbsp;יד</span>
+      <strong class="latin">BR</strong>
+      <span>עור&nbsp;מלא</span>
+    </div>
+    <h1>הכביש לא זוכר<br>מי הגיע ראשון</h1>
+    <p class="lead">
+      אביזרי עור לאופנועים, נחתכים ונתפרים ביד. בלי מכונות שמייצרות אלף בשעה,
+      בלי גימור שנראה טוב רק בקטלוג. דברים שנבנים כדי להישחק יפה.
+    </p>
+    <div class="hero-cta">
+      <a class="btn brass" href="shop.html">לחנות</a>
+      <a class="btn ghost" href="story.html">הסיפור שלנו</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= פס נע ================= -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="ticker"></div>
+</div>
+
+<!-- ================= קטגוריות ================= -->
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">The Catalogue</p>
+    <h2>מה יש בסדנה</h2>
+    <p class="lead" style="margin-bottom:38px">
+      שש משפחות מוצרים. כל פריט נתפר לפי דגם ומידה, ורובם קיימים בכמה גוונים של עור.
+    </p>
+    <div class="cat-grid" id="cat-grid"></div>
+  </div>
+</section>
+
+<!-- ================= סיפור קצר ================= -->
+<section class="section dark">
+  <div class="wrap split">
+    <div>
+      <p class="eyebrow">Our Story</p>
+      <h2>נולד במוסך,<br>לא במשרד</h2>
+      <p class="lead">
+        BACKROAD התחיל מרצועת מיכל אחת, שנתפרה כי לא היה אפשר למצוא כזאת שמתאימה.
+        אחר כך היו גריפים, ואז תיק, ואז הבנו שיש כאן סדנה.
+      </p>
+      <p class="lead">
+        אנחנו עובדים עם עור מלא בעיבוד צמחי, פליז מוצק וחוט ווקס.
+        כל תפר נעשה בעבודת יד, וכל פריט יוצא עם סימני הכלים שעשו אותו.
+      </p>
+      <a class="btn ghost" href="story.html" style="margin-top:14px">להמשך הסיפור</a>
+    </div>
+    <div class="frame">
+      <img src="images/brand/workshop.jpg" alt="הסדנה של BACKROAD" onerror="this.remove()">
+    </div>
+  </div>
+</section>
+
+<!-- ================= מוצרים נבחרים ================= -->
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">Selected</p>
+    <h2>נבחרי הבית</h2>
+    <div class="product-grid" id="featured" style="margin-top:32px"></div>
+    <div style="text-align:center;margin-top:44px">
+      <a class="btn ghost" href="shop.html">לכל המוצרים</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= שלוש הבטחות ================= -->
+<section class="section tight" style="background:var(--paper-2);border-block:2px solid var(--ink)">
+  <div class="wrap story-grid">
+    <div class="story-block">
+      <div class="num">01</div>
+      <h3>עור מלא בעיבוד צמחי</h3>
+      <p class="lead">לא ספליט ולא ציפוי. עור שמשנה גוון עם השמש והשימוש.</p>
+    </div>
+    <div class="story-block">
+      <div class="num">02</div>
+      <h3>התאמה לפי דגם</h3>
+      <p class="lead">רצועות ופאדים נחתכים לפי המיכל שלכם, לא לפי "בערך".</p>
+    </div>
+    <div class="story-block">
+      <div class="num">03</div>
+      <h3>תיקון, לא החלפה</h3>
+      <p class="lead">נקרע תפר? שלחו לנו. אנחנו תופרים מחדש במקום למכור חדש.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ציטוט ================= -->
+<section class="section dark">
+  <div class="wrap">
+    <blockquote class="pull-quote">
+      "אביזר טוב לא מושך תשומת לב. הוא פשוט שם, בכל נסיעה, עשר שנים."
+      <cite>— הסדנה</cite>
+    </blockquote>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script>
+/* ---------- הפס הנע ---------- */
+const SLOGANS = ['תפור ביד', 'עור מלא', 'משלוח חינם מעל ₪500', 'התאמה לפי דגם',
+                 'OLD SCHOOL SINCE DAY ONE', 'אחריות על התפרים'];
+document.addEventListener('DOMContentLoaded', () => {
+  // הרשימה מוכפלת כדי שהאנימציה תתחבר חלק בלולאה
+  $('#ticker').innerHTML = [...SLOGANS, ...SLOGANS]
+    .map(s => `<span class="latin">${esc(s)}</span><span>✦</span>`).join('');
+
+  /* ---------- קטגוריות ---------- */
+  $('#cat-grid').innerHTML = CATEGORIES.map((c, i) => {
+    const n = PRODUCTS.filter(p => p.category === c.id).length;
+    return `
+      <a class="cat-card" href="shop.html?cat=${c.id}">
+        <span class="num">${String(i + 1).padStart(2, '0')}</span>
+        <h3>${esc(c.name)}</h3>
+        <p>${esc(c.tagline)}</p>
+        <span class="go">${n} פריטים ←</span>
+      </a>`;
+  }).join('');
+
+  /* ---------- מוצרים נבחרים ---------- */
+  $('#featured').innerHTML = FEATURED
+    .map(getProduct).filter(Boolean).map(productCard).join('');
+});
+</script>
+</body>
+</html>

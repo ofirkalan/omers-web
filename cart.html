@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>עגלת הקניות — BACKROAD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@400;700;800&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">Your Cart</p>
+    <h1>עגלת הקניות</h1>
+    <div id="cart-root" style="margin-top:30px"></div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script>
+function renderCart() {
+  const { rows, subtotal, shipping, total } = Cart.detailed();
+
+  if (!rows.length) {
+    $('#cart-root').innerHTML = `
+      <div class="empty-state">
+        <h3>העגלה ריקה</h3>
+        <p>עוד לא בחרתם כלום. יש לנו כמה דברים שכדאי לראות.</p>
+        <a class="btn" href="shop.html">לחנות</a>
+      </div>`;
+    return;
+  }
+
+  $('#cart-root').innerHTML = `
+    <div class="cart-layout">
+      <div>
+        ${rows.map(r => `
+          <div class="cart-row">
+            <a class="cart-thumb" href="product.html?id=${r.product.id}">
+              ${productImage(r.product)}
+            </a>
+            <div>
+              <a href="product.html?id=${r.product.id}">
+                <strong style="font-family:'Frank Ruhl Libre',serif;font-size:1.05rem">
+                  ${esc(r.product.name)}
+                </strong>
+              </a>
+              <div class="cart-meta">${esc(r.product.variantLabel)}: ${esc(r.variant.name)}</div>
+              <div class="qty" style="margin-top:10px;transform:scale(.85);transform-origin:right center">
+                <button type="button" data-act="dec" data-i="${r.index}" aria-label="הפחת">−</button>
+                <output>${r.qty}</output>
+                <button type="button" data-act="inc" data-i="${r.index}" aria-label="הוסף">+</button>
+              </div>
+            </div>
+            <div style="text-align:end">
+              <div class="price">${money(r.lineTotal)}</div>
+              <button class="link-danger" data-act="del" data-i="${r.index}" style="margin-top:8px">הסרה</button>
+            </div>
+          </div>`).join('')}
+
+        <div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:24px">
+          <a class="btn ghost" href="shop.html">המשך קנייה</a>
+          <button class="link-danger" id="clear">ריקון העגלה</button>
+        </div>
+      </div>
+
+      <aside class="summary">
+        <h3>סיכום הזמנה</h3>
+        <div class="line"><span>סכום ביניים</span><span>${money(subtotal)}</span></div>
+        <div class="line"><span>משלוח</span><span>${shipping ? money(shipping) : 'חינם'}</span></div>
+        <div class="line total"><span>סה״כ</span><span>${money(total)}</span></div>
+        <a class="btn brass block" href="checkout.html" style="margin-top:20px">למעבר לתשלום</a>
+        <p class="note">
+          ${subtotal < STORE.freeShippingOver
+            ? `עוד ${money(STORE.freeShippingOver - subtotal)} ותקבלו משלוח חינם.`
+            : 'המשלוח עליכם — כלומר עלינו. חינם.'}
+          <br>המחירים כוללים מע״מ.
+        </p>
+      </aside>
+    </div>`;
+
+  /* פעולות על שורות */
+  $$('[data-act]').forEach(btn => btn.addEventListener('click', () => {
+    const i = +btn.dataset.i;
+    const row = Cart.read()[i];
+    if (!row) return;
+    if (btn.dataset.act === 'inc') Cart.setQty(i, row.qty + 1);
+    if (btn.dataset.act === 'dec') {
+      if (row.qty <= 1) Cart.remove(i); else Cart.setQty(i, row.qty - 1);
+    }
+    if (btn.dataset.act === 'del') Cart.remove(i);
+    renderCart();
+  }));
+
+  $('#clear').addEventListener('click', () => { Cart.clear(); renderCart(); });
+}
+
+document.addEventListener('DOMContentLoaded', renderCart);
+</script>
+</body>
+</html>

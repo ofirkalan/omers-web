@@ -1,0 +1,791 @@
+﻿/* =============================================================
+   BACKROAD — גיליון סגנון ראשי
+   סדר: משתנים · איפוס · טיפוגרפיה · פריסה · כותרת · פוטר ·
+         עמוד הבית · חנות · מוצר · עגלה · תשלום · טפסים · רספונסיבי
+============================================================= */
+
+/* ---------------- 1. משתני עיצוב ---------------- */
+:root {
+  /* דיו — הרקעים הכהים */
+  --ink:        #14110f;
+  --ink-2:      #1d1916;
+  --ink-3:      #2a2420;
+  --ink-line:   #3a322b;
+
+  /* נייר — הרקעים הבהירים */
+  --paper:      #e9e0ce;
+  --paper-2:    #ded3bc;
+  --paper-3:    #cdbfa2;
+
+  /* מבטאים */
+  --brass:      #c2953c;
+  --brass-dim:  #8f6c26;
+  --rust:       #9a4227;
+  --olive:      #55583f;
+
+  /* טקסט */
+  --tx-light:   #ece3d1;
+  --tx-mute:    #a99c85;
+  --tx-dark:    #211c17;
+  --tx-dark-mute: #5d5347;
+
+  /* מידות */
+  --wrap:       1220px;
+  --rule:       2px;
+  --radius:     2px;   /* כמעט ללא עיגול — שלטי פח, לא אפליקציות */
+
+  --shadow-lift: 0 18px 40px rgba(0,0,0,.45);
+  --ease: cubic-bezier(.2,.6,.25,1);
+}
+
+/* גרעין נייר – שכבת רעש עדינה שנפרסת מעל הכל */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: .10;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------------- 2. איפוס ---------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  direction: rtl;
+  background: var(--paper);
+  color: var(--tx-dark);
+  font-family: 'Assistant', 'Segoe UI', Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+ul { list-style: none; margin: 0; padding: 0; }
+input, select, textarea { font: inherit; }
+
+/* ---------------- 3. טיפוגרפיה ---------------- */
+h1, h2, h3, h4 {
+  font-family: 'Frank Ruhl Libre', Georgia, serif;
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0 0 .5em;
+  letter-spacing: -.01em;
+}
+h1 { font-size: clamp(2.4rem, 6vw, 4.4rem); }
+h2 { font-size: clamp(1.8rem, 3.6vw, 2.9rem); }
+h3 { font-size: 1.35rem; }
+
+.latin {
+  font-family: 'Oswald', 'Frank Ruhl Libre', sans-serif;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* תווית קטנה מעל כותרת — "עין" של דפוס ישן */
+.eyebrow {
+  font-family: 'Oswald', sans-serif;
+  font-size: .74rem;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--brass);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: .45;
+}
+.eyebrow.center { justify-content: center; }
+.eyebrow.center::after { display: none; }
+.eyebrow.center::before {
+  content: '——';
+  opacity: .5;
+}
+
+.lead { font-size: 1.12rem; color: var(--tx-dark-mute); max-width: 62ch; }
+.on-dark .lead { color: var(--tx-mute); }
+
+/* ---------------- 4. פריסה ---------------- */
+.wrap { width: min(100% - 44px, var(--wrap)); margin-inline: auto; }
+.section { padding: 92px 0; }
+.section.tight { padding: 62px 0; }
+.section.dark { background: var(--ink); color: var(--tx-light); }
+.section.dark h1, .section.dark h2, .section.dark h3 { color: var(--tx-light); }
+
+/* קו כפול — מוטיב חוזר של דפוס ישן */
+.rule-double {
+  border: 0;
+  border-top: 3px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  height: 5px;
+  margin: 0;
+  opacity: .35;
+}
+.section.dark .rule-double { border-color: var(--brass); opacity: .4; }
+
+/* ---------------- 5. כפתורים ---------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 34px;
+  border: var(--rule) solid var(--ink);
+  background: var(--ink);
+  color: var(--tx-light);
+  font-family: 'Oswald', sans-serif;
+  font-size: .86rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  border-radius: var(--radius);
+  transition: transform .18s var(--ease), background .18s, color .18s, box-shadow .18s;
+}
+.btn:hover { background: var(--brass); border-color: var(--brass); color: var(--ink); transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn.ghost:hover { background: var(--ink); color: var(--paper); }
+.on-dark .btn.ghost, .section.dark .btn.ghost { color: var(--tx-light); border-color: var(--paper-3); }
+.on-dark .btn.ghost:hover, .section.dark .btn.ghost:hover { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+.btn.brass { background: var(--brass); border-color: var(--brass); color: var(--ink); }
+.btn.brass:hover { background: var(--paper); border-color: var(--paper); }
+.btn.block { width: 100%; }
+.btn[disabled] { opacity: .4; pointer-events: none; }
+
+/* ---------------- 6. כותרת עליונה ---------------- */
+.topbar {
+  background: var(--ink);
+  color: var(--brass);
+  font-family: 'Oswald', sans-serif;
+  font-size: .7rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--ink-line);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: var(--ink-2);
+  border-bottom: 3px solid var(--brass-dim);
+  box-shadow: 0 2px 0 var(--ink), 0 10px 26px rgba(0,0,0,.28);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  min-height: 74px;
+}
+.brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  color: var(--paper);
+}
+.brand-mark {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: .3em;
+  direction: ltr;
+}
+.brand-sub {
+  font-family: 'Oswald', sans-serif;
+  font-size: .55rem;
+  letter-spacing: .3em;
+  color: var(--brass);
+  margin-top: 5px;
+  direction: ltr;
+}
+.nav { display: flex; gap: 26px; margin-inline-start: auto; }
+.nav a {
+  color: var(--tx-mute);
+  font-family: 'Oswald', sans-serif;
+  font-size: .82rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: 6px 0;
+  border-bottom: 2px solid transparent;
+  transition: color .18s, border-color .18s;
+}
+.nav a:hover, .nav a.active { color: var(--paper); border-color: var(--brass); }
+
+.header-tools { display: flex; align-items: center; gap: 14px; }
+.cart-btn {
+  position: relative;
+  background: transparent;
+  border: 2px solid var(--ink-line);
+  color: var(--paper);
+  padding: 9px 16px 9px 14px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: 'Oswald', sans-serif;
+  font-size: .78rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  border-radius: var(--radius);
+  transition: border-color .18s, background .18s;
+}
+.cart-btn:hover { border-color: var(--brass); background: #000; }
+.cart-count {
+  min-width: 21px;
+  height: 21px;
+  padding: 0 5px;
+  border-radius: 11px;
+  background: var(--brass);
+  color: var(--ink);
+  font-size: .72rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.cart-count[data-empty="true"] { background: var(--ink-line); color: var(--tx-mute); }
+
+.burger { display: none; background: none; border: 2px solid var(--ink-line); color: var(--paper); padding: 9px 12px; border-radius: var(--radius); }
+
+/* ---------------- 7. גיבור (עמוד הבית) ---------------- */
+.hero {
+  position: relative;
+  min-height: min(88vh, 780px);
+  display: grid;
+  align-items: center;
+  background:
+    radial-gradient(120% 90% at 70% 20%, rgba(194,149,60,.16), transparent 60%),
+    linear-gradient(180deg, #17130f 0%, #0d0b09 100%);
+  color: var(--tx-light);
+  overflow: hidden;
+  border-bottom: 3px solid var(--brass-dim);
+}
+/* טקסטורת פסים אלכסונית עדינה ברקע */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(-45deg, rgba(255,255,255,.028) 0 2px, transparent 2px 11px);
+  pointer-events: none;
+}
+/* וינייטה */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(85% 75% at 50% 45%, transparent 40%, rgba(0,0,0,.75) 100%);
+  pointer-events: none;
+}
+.hero-inner { position: relative; z-index: 2; padding: 110px 0; text-align: center; }
+.hero h1 { margin-bottom: 20px; text-shadow: 0 6px 30px rgba(0,0,0,.6); }
+.hero .lead { margin: 0 auto 34px; }
+.hero-cta { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+/* חותם המותג */
+.seal {
+  width: 132px;
+  height: 132px;
+  margin: 0 auto 30px;
+  border: 3px double var(--brass);
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 3px;
+  color: var(--brass);
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: .2em;
+  font-size: .58rem;
+  text-transform: uppercase;
+  background: rgba(0,0,0,.35);
+}
+.seal strong { font-size: 1.05rem; letter-spacing: .26em; color: var(--paper); }
+
+/* פס נע עם סיסמאות */
+.ticker {
+  background: var(--brass);
+  color: var(--ink);
+  overflow: hidden;
+  border-block: 3px solid var(--ink);
+  padding: 11px 0;
+}
+.ticker-track {
+  display: flex;
+  gap: 46px;
+  width: max-content;
+  animation: slide 34s linear infinite;
+  font-family: 'Oswald', sans-serif;
+  font-size: .82rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+@keyframes slide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+
+/* ---------------- 8. קטגוריות ---------------- */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+}
+.cat-card {
+  position: relative;
+  display: block;
+  min-height: 250px;
+  padding: 26px;
+  background: var(--ink);
+  color: var(--tx-light);
+  border: var(--rule) solid var(--ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transition: transform .25s var(--ease), box-shadow .25s;
+}
+.cat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.03) 0 2px, transparent 2px 10px),
+    linear-gradient(160deg, #2b241d, #100e0c);
+  transition: transform .5s var(--ease);
+}
+.cat-card > * { position: relative; z-index: 2; }
+.cat-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lift); }
+.cat-card:hover::before { transform: scale(1.06); }
+.cat-card .num {
+  position: absolute;
+  top: 18px;
+  inset-inline-start: 22px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 3.4rem;
+  color: rgba(194,149,60,.22);
+  z-index: 2;
+  line-height: 1;
+}
+.cat-card h3 { margin-bottom: 4px; color: var(--paper); }
+.cat-card p { margin: 0 0 12px; color: var(--tx-mute); font-size: .95rem; }
+.cat-card .go {
+  font-family: 'Oswald', sans-serif;
+  font-size: .74rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+/* ---------------- 9. רשת מוצרים ---------------- */
+.shop-layout { display: grid; grid-template-columns: 250px 1fr; gap: 42px; align-items: start; }
+
+.filters { position: sticky; top: 100px; }
+.filters h4 {
+  font-family: 'Oswald', sans-serif;
+  font-size: .78rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--tx-dark-mute);
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--ink);
+}
+.filters li + li { margin-top: 2px; }
+.filters button {
+  width: 100%;
+  text-align: start;
+  background: none;
+  border: 0;
+  border-inline-start: 3px solid transparent;
+  padding: 8px 12px;
+  color: var(--tx-dark-mute);
+  transition: color .15s, border-color .15s, background .15s;
+}
+.filters button:hover { color: var(--tx-dark); background: rgba(0,0,0,.04); }
+.filters button.active {
+  color: var(--tx-dark);
+  font-weight: 700;
+  border-inline-start-color: var(--brass);
+  background: rgba(194,149,60,.13);
+}
+.filters .count { float: inline-end; opacity: .5; font-size: .85rem; }
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 26px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper-2);
+  border: var(--rule) solid var(--ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform .22s var(--ease), box-shadow .22s;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(20,17,15,.22); }
+.card-media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: rgba(20,17,15,.09);
+  overflow: hidden;
+}
+.card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s var(--ease); }
+.card:hover .card-media img { transform: scale(1.05); }
+.card-body { padding: 16px 18px 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.card-cat {
+  font-family: 'Oswald', sans-serif;
+  font-size: .66rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--brass-dim);
+}
+.card-name { font-family: 'Frank Ruhl Libre', serif; font-weight: 700; font-size: 1.06rem; line-height: 1.3; }
+.card-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 6px; }
+.price { font-family: 'Oswald', sans-serif; font-size: 1.15rem; letter-spacing: .05em; }
+.swatches { display: flex; gap: 5px; }
+.swatch-dot { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(0,0,0,.4); }
+.swatch-more { font-size: .74rem; color: var(--tx-dark-mute); align-self: center; }
+
+.badge {
+  position: absolute;
+  top: 12px;
+  inset-inline-start: 12px;
+  z-index: 3;
+  background: var(--rust);
+  color: var(--paper);
+  font-family: 'Oswald', sans-serif;
+  font-size: .64rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: var(--radius);
+}
+
+/* מסגרות תמונה נשארות ריקות עד שמעלים קובץ תמונה בפועל */
+
+/* ---------------- 10. עמוד מוצר ---------------- */
+.crumbs {
+  font-family: 'Oswald', sans-serif;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--tx-dark-mute);
+  padding: 22px 0;
+}
+.crumbs a:hover { color: var(--brass-dim); }
+.crumbs span { opacity: .5; margin: 0 8px; }
+
+.product-layout { display: grid; grid-template-columns: 1.05fr .95fr; gap: 54px; align-items: start; padding-bottom: 90px; }
+.product-media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: rgba(20,17,15,.09);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.product-media img { width: 100%; height: 100%; object-fit: cover; }
+.product-info h1 { font-size: clamp(1.9rem, 3.6vw, 2.8rem); }
+.product-price { font-family: 'Oswald', sans-serif; font-size: 2rem; margin: 6px 0 18px; }
+
+.field { margin-bottom: 24px; }
+.field > label, .field > .field-label {
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  font-size: .74rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--tx-dark-mute);
+  margin-bottom: 10px;
+}
+.variant-list { display: flex; flex-wrap: wrap; gap: 10px; }
+.variant {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 15px;
+  background: transparent;
+  border: 2px solid var(--paper-3);
+  border-radius: var(--radius);
+  color: var(--tx-dark);
+  font-size: .92rem;
+  transition: border-color .16s, background .16s;
+}
+.variant:hover { border-color: var(--tx-dark-mute); }
+.variant[aria-pressed="true"] { border-color: var(--ink); background: rgba(20,17,15,.07); font-weight: 700; }
+.variant .chip { width: 17px; height: 17px; border-radius: 50%; border: 1px solid rgba(0,0,0,.45); }
+
+.qty { display: inline-flex; align-items: center; border: 2px solid var(--ink); border-radius: var(--radius); }
+.qty button { width: 42px; height: 44px; background: none; border: 0; font-size: 1.25rem; color: var(--ink); }
+.qty button:hover { background: rgba(20,17,15,.08); }
+.qty output { width: 54px; text-align: center; font-family: 'Oswald', sans-serif; font-size: 1.05rem; }
+
+.spec-list { border-top: 1px solid var(--paper-3); margin-top: 26px; }
+.spec-list div { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--paper-3); font-size: .94rem; }
+.spec-list dt, .spec-list .k { color: var(--tx-dark-mute); }
+
+/* ---------------- 11. עגלה ---------------- */
+.cart-layout { display: grid; grid-template-columns: 1fr 350px; gap: 40px; align-items: start; }
+.cart-row {
+  display: grid;
+  grid-template-columns: 96px 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--paper-3);
+}
+.cart-row:first-child { border-top: 2px solid var(--ink); }
+.cart-thumb {
+  position: relative;
+  width: 96px;
+  aspect-ratio: 4/5;
+  background: rgba(20,17,15,.09);
+  border: 1px solid var(--ink);
+  overflow: hidden;
+}
+.cart-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.cart-meta { font-size: .88rem; color: var(--tx-dark-mute); }
+.link-danger { background: none; border: 0; color: var(--rust); font-size: .85rem; padding: 0; text-decoration: underline; }
+
+.summary {
+  position: sticky;
+  top: 100px;
+  background: var(--ink);
+  color: var(--tx-light);
+  padding: 28px;
+  border-radius: var(--radius);
+  border: 3px solid var(--ink);
+}
+.summary h3 { color: var(--paper); }
+.summary .line { display: flex; justify-content: space-between; padding: 9px 0; color: var(--tx-mute); font-size: .95rem; }
+.summary .line.total {
+  border-top: 1px solid var(--ink-line);
+  margin-top: 10px;
+  padding-top: 16px;
+  color: var(--paper);
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.3rem;
+}
+.summary .note { font-size: .78rem; color: var(--tx-mute); margin-top: 14px; line-height: 1.6; }
+
+.empty-state { text-align: center; padding: 90px 20px; }
+.empty-state p { color: var(--tx-dark-mute); margin-bottom: 26px; }
+
+/* ---------------- 12. טפסים / תשלום ---------------- */
+.checkout-layout { display: grid; grid-template-columns: 1fr 350px; gap: 40px; align-items: start; }
+.form-card {
+  background: var(--paper-2);
+  border: var(--rule) solid var(--ink);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 22px;
+}
+.form-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.1rem;
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--ink);
+}
+.form-card h3 .step {
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+  background: var(--ink); color: var(--brass);
+  font-family: 'Oswald', sans-serif; font-size: .85rem;
+  border-radius: 50%;
+}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.input, select.input, textarea.input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--paper);
+  border: 2px solid var(--paper-3);
+  border-radius: var(--radius);
+  color: var(--tx-dark);
+  transition: border-color .16s, box-shadow .16s;
+}
+.input:focus { outline: 0; border-color: var(--brass); box-shadow: 0 0 0 3px rgba(194,149,60,.22); }
+.input[aria-invalid="true"] { border-color: var(--rust); }
+.err { display: block; color: var(--rust); font-size: .8rem; margin-top: 5px; min-height: 1em; }
+
+.pay-methods { display: grid; gap: 10px; margin-bottom: 18px; }
+.pay-opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 16px;
+  border: 2px solid var(--paper-3);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.pay-opt:has(input:checked) { border-color: var(--ink); background: rgba(20,17,15,.06); }
+.pay-opt input { accent-color: var(--ink); width: 17px; height: 17px; }
+
+.demo-note {
+  background: rgba(154,66,39,.1);
+  border-inline-start: 4px solid var(--rust);
+  padding: 14px 16px;
+  font-size: .87rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.demo-note strong { color: var(--rust); }
+
+/* מסך אישור הזמנה */
+.receipt {
+  max-width: 620px;
+  margin: 0 auto;
+  background: var(--paper-2);
+  border: 3px double var(--ink);
+  padding: 44px 38px;
+  text-align: center;
+}
+.receipt .order-no {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: .18em;
+  padding: 12px 0;
+  border-block: 2px solid var(--ink);
+  margin: 22px 0;
+}
+
+/* ---------------- 13. סיפור המותג ---------------- */
+.story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 34px; }
+.story-block .num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2.6rem;
+  color: var(--brass);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.pull-quote {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  line-height: 1.5;
+  text-align: center;
+  max-width: 22ch;
+  margin: 0 auto;
+}
+.pull-quote cite {
+  display: block;
+  font-family: 'Oswald', sans-serif;
+  font-size: .74rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  font-style: normal;
+  color: var(--brass);
+  margin-top: 22px;
+}
+
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.frame {
+  aspect-ratio: 1;
+  border: 3px solid var(--brass-dim);
+  outline: 1px solid var(--brass-dim);
+  outline-offset: 9px;
+  background: rgba(128,120,105,.14);
+  position: relative;
+  overflow: hidden;
+}
+.frame img { width: 100%; height: 100%; object-fit: cover; }
+
+/* ---------------- 14. פוטר ---------------- */
+.site-footer { background: var(--ink); color: var(--tx-mute); padding: 70px 0 26px; border-top: 3px solid var(--brass-dim); }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 36px; }
+.site-footer h4 {
+  font-family: 'Oswald', sans-serif;
+  font-size: .76rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--paper);
+  margin: 0 0 16px;
+}
+.site-footer li + li { margin-top: 9px; }
+.site-footer a:hover { color: var(--brass); }
+.footer-bottom {
+  margin-top: 46px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ink-line);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: .82rem;
+}
+.newsletter { display: flex; gap: 8px; margin-top: 12px; }
+.newsletter input {
+  flex: 1;
+  padding: 11px 13px;
+  background: #000;
+  border: 2px solid var(--ink-line);
+  color: var(--paper);
+  border-radius: var(--radius);
+}
+.newsletter input:focus { outline: 0; border-color: var(--brass); }
+.newsletter button { padding: 11px 18px; background: var(--brass); border: 2px solid var(--brass); color: var(--ink); font-family: 'Oswald', sans-serif; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; border-radius: var(--radius); }
+.newsletter button:hover { background: var(--paper); border-color: var(--paper); }
+
+/* ---------------- 15. הודעת "נוסף לעגלה" ---------------- */
+.toast {
+  position: fixed;
+  inset-block-end: 26px;
+  inset-inline-start: 26px;
+  z-index: 500;
+  background: var(--ink);
+  color: var(--paper);
+  border-inline-start: 4px solid var(--brass);
+  padding: 15px 22px;
+  box-shadow: var(--shadow-lift);
+  transform: translateY(140%);
+  transition: transform .35s var(--ease);
+  max-width: 320px;
+}
+.toast.show { transform: translateY(0); }
+
+/* ---------------- 16. רספונסיבי ---------------- */
+@media (max-width: 980px) {
+  .shop-layout, .cart-layout, .checkout-layout, .product-layout, .split { grid-template-columns: 1fr; }
+  .filters { position: static; }
+  .filters ul { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filters button { width: auto; border: 2px solid var(--paper-3); border-radius: var(--radius); }
+  .filters button.active { border-color: var(--ink); }
+  .summary { position: static; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 720px) {
+  .burger { display: block; }
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    flex-direction: column;
+    gap: 0;
+    background: var(--ink);
+    border-bottom: 3px solid var(--brass-dim);
+    padding: 8px 22px 18px;
+  }
+  .nav.open { display: flex; }
+  .nav a { padding: 12px 0; border-bottom: 1px solid var(--ink-line); }
+  .header-inner { gap: 14px; }
+  .section { padding: 62px 0; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .cart-row { grid-template-columns: 72px 1fr; }
+  .cart-thumb { width: 72px; }
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מוצר — BACKROAD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@400;700;800&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main class="wrap" id="main"></main>
+
+<!-- מוצרים נוספים מאותה קטגוריה -->
+<section class="section" style="background:var(--paper-2);border-top:2px solid var(--ink)" id="related-section" hidden>
+  <div class="wrap">
+    <p class="eyebrow">More</p>
+    <h2>עוד מאותה משפחה</h2>
+    <div class="product-grid" id="related" style="margin-top:28px"></div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const p = getProduct(param('id'));
+
+  /* מוצר לא קיים — מסך ריק ידידותי */
+  if (!p) {
+    $('#main').innerHTML = `
+      <div class="empty-state">
+        <h2>המוצר לא נמצא</h2>
+        <p>ייתכן שהקישור ישן או שהפריט ירד מהמדף.</p>
+        <a class="btn" href="shop.html">לחנות</a>
+      </div>`;
+    return;
+  }
+
+  document.title = p.name + ' — BACKROAD';
+  const cat = getCategory(p.category);
+  let selected = p.variants[0];
+  let qty = 1;
+
+  $('#main').innerHTML = `
+    <nav class="crumbs">
+      <a href="index.html">בית</a><span>/</span>
+      <a href="shop.html">החנות</a><span>/</span>
+      <a href="shop.html?cat=${cat.id}">${esc(cat.name)}</a><span>/</span>
+      ${esc(p.name)}
+    </nav>
+
+    <div class="product-layout">
+      <div class="product-media">
+        ${p.badge ? `<span class="badge">${esc(p.badge)}</span>` : ''}
+        ${productImage(p)}
+      </div>
+
+      <div class="product-info">
+        <p class="eyebrow">${esc(cat.name)}</p>
+        <h1>${esc(p.name)}</h1>
+        <div class="product-price">${money(p.price)}</div>
+        <p class="lead">${esc(p.desc)}</p>
+
+        <div class="field">
+          <span class="field-label">${esc(p.variantLabel)} — <span id="variant-name">${esc(selected.name)}</span></span>
+          <div class="variant-list" id="variants"></div>
+        </div>
+
+        <div class="field">
+          <span class="field-label">כמות</span>
+          <div class="qty">
+            <button type="button" id="minus" aria-label="הפחת">−</button>
+            <output id="qty">1</output>
+            <button type="button" id="plus" aria-label="הוסף">+</button>
+          </div>
+        </div>
+
+        <button class="btn block" id="add">הוספה לעגלה</button>
+
+        <div class="spec-list">
+          <div><span class="k">חומר</span><span>עור מלא בעיבוד צמחי</span></div>
+          <div><span class="k">${esc(p.variantLabel)}ים זמינים</span><span>${p.variants.length}</span></div>
+          <div><span class="k">ייצור</span><span>תפירה ידנית בישראל</span></div>
+          <div><span class="k">משלוח</span><span>חינם מעל ${money(STORE.freeShippingOver)}</span></div>
+          <div><span class="k">אחריות</span><span>שנתיים על התפרים</span></div>
+        </div>
+      </div>
+    </div>`;
+
+  /* ---------- בורר הגוונים ---------- */
+  function paintVariants() {
+    $('#variants').innerHTML = p.variants.map(v => `
+      <button class="variant" type="button" data-key="${v.key}"
+              aria-pressed="${v.key === selected.key}">
+        ${v.hex ? `<span class="chip" style="background:${v.hex}"></span>` : ''}
+        <span>${esc(v.name)}</span>
+      </button>`).join('');
+
+    $$('#variants .variant').forEach(b => b.addEventListener('click', () => {
+      selected = p.variants.find(v => v.key === b.dataset.key);
+      $('#variant-name').textContent = selected.name;
+      paintVariants();
+    }));
+  }
+  paintVariants();
+
+  /* ---------- כמות ---------- */
+  const setQty = n => { qty = Math.max(1, Math.min(99, n)); $('#qty').textContent = qty; };
+  $('#minus').addEventListener('click', () => setQty(qty - 1));
+  $('#plus').addEventListener('click', () => setQty(qty + 1));
+
+  /* ---------- הוספה לעגלה ---------- */
+  $('#add').addEventListener('click', () => {
+    Cart.add(p.id, selected.key, qty);
+    toast(`${p.name} (${selected.name}) נוסף לעגלה`);
+  });
+
+  /* ---------- מוצרים קשורים ---------- */
+  const related = PRODUCTS.filter(x => x.category === p.category && x.id !== p.id).slice(0, 4);
+  if (related.length) {
+    $('#related-section').hidden = false;
+    $('#related').innerHTML = related.map(productCard).join('');
+  }
+});
+</script>
+</body>
+</html>

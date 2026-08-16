@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>החנות — BACKROAD</title>
+<meta name="description" content="כל אביזרי העור של BACKROAD: אביזרים, מיכל דלק, כידון, ציוד רכיבה, תיקים ו-LIFESTYLE.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@400;700;800&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<!-- כותרת עמוד -->
+<section class="section tight" style="background:var(--ink);color:var(--tx-light);border-bottom:3px solid var(--brass-dim)">
+  <div class="wrap on-dark">
+    <p class="eyebrow">The Shop</p>
+    <h1 id="shop-title" style="color:var(--tx-light);margin:0">החנות</h1>
+    <p class="lead" id="shop-sub" style="margin-top:10px"></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap shop-layout">
+
+    <!-- סינון -->
+    <aside class="filters">
+      <h4>קטגוריות</h4>
+      <ul id="filter-list"></ul>
+
+      <h4 style="margin-top:30px">מיון</h4>
+      <select class="input" id="sort">
+        <option value="default">ברירת מחדל</option>
+        <option value="price-asc">מחיר — מהנמוך לגבוה</option>
+        <option value="price-desc">מחיר — מהגבוה לנמוך</option>
+        <option value="name">שם — א׳ עד ת׳</option>
+      </select>
+    </aside>
+
+    <!-- מוצרים -->
+    <div>
+      <p id="result-count" style="color:var(--tx-dark-mute);margin:0 0 18px"></p>
+      <div class="product-grid" id="grid"></div>
+      <div class="empty-state" id="no-results" hidden>
+        <h3>לא נמצאו מוצרים</h3>
+        <p>נסו קטגוריה אחרת.</p>
+        <a class="btn ghost" href="shop.html">לכל המוצרים</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  let activeCat   = param('cat')   || 'all';
+  let activeGroup = param('group') || null;
+
+  /* ---------- בניית רשימת הסינון ---------- */
+  function buildFilters() {
+    const items = [
+      { key: 'all', label: 'כל המוצרים', count: PRODUCTS.length, indent: false }
+    ];
+    CATEGORIES.forEach(c => {
+      items.push({
+        key: c.id,
+        label: c.name,
+        count: PRODUCTS.filter(p => p.category === c.id).length,
+        indent: false
+      });
+      // תתי-קבוצות (רלוונטי כרגע רק לתיקים)
+      const groups = [...new Set(PRODUCTS.filter(p => p.category === c.id && p.group).map(p => p.group))];
+      groups.forEach(g => items.push({
+        key: c.id, group: g, label: GROUPS[g] || g,
+        count: PRODUCTS.filter(p => p.group === g).length, indent: true
+      }));
+    });
+
+    $('#filter-list').innerHTML = items.map(it => {
+      const on = it.group
+        ? (activeGroup === it.group)
+        : (activeCat === it.key && !activeGroup);
+      return `
+        <li>
+          <button data-cat="${it.key}" ${it.group ? `data-group="${it.group}"` : ''}
+                  class="${on ? 'active' : ''}"
+                  style="${it.indent ? 'padding-inline-start:26px;font-size:.92rem' : ''}">
+            ${it.indent ? '— ' : ''}${esc(it.label)}
+            <span class="count">${it.count}</span>
+          </button>
+        </li>`;
+    }).join('');
+
+    $$('#filter-list button').forEach(btn => btn.addEventListener('click', () => {
+      activeCat = btn.dataset.cat;
+      activeGroup = btn.dataset.group || null;
+      const qs = new URLSearchParams();
+      if (activeCat !== 'all') qs.set('cat', activeCat);
+      if (activeGroup) qs.set('group', activeGroup);
+      history.replaceState(null, '', qs.toString() ? '?' + qs : location.pathname);
+      buildFilters();
+      render();
+    }));
+  }
+
+  /* ---------- תצוגת המוצרים ---------- */
+  function render() {
+    let list = PRODUCTS.filter(p =>
+      (activeCat === 'all' || p.category === activeCat) &&
+      (!activeGroup || p.group === activeGroup));
+
+    const sort = $('#sort').value;
+    if (sort === 'price-asc')  list = [...list].sort((a, b) => a.price - b.price);
+    if (sort === 'price-desc') list = [...list].sort((a, b) => b.price - a.price);
+    if (sort === 'name')       list = [...list].sort((a, b) => a.name.localeCompare(b.name, 'he'));
+
+    $('#grid').innerHTML = list.map(productCard).join('');
+    $('#no-results').hidden = list.length > 0;
+    $('#result-count').textContent = `${list.length} פריטים`;
+
+    const cat = getCategory(activeCat);
+    $('#shop-title').textContent = activeGroup ? (GROUPS[activeGroup] || cat.name)
+                                 : cat ? cat.name : 'החנות';
+    $('#shop-sub').textContent = cat ? cat.tagline : 'כל הפריטים שיוצאים מהסדנה';
+  }
+
+  $('#sort').addEventListener('change', render);
+  buildFilters();
+  render();
+});
+</script>
+</body>
+</html>

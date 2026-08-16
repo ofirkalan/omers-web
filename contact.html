@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>צור קשר — BACKROAD</title>
+<meta name="description" content="יצירת קשר עם BACKROAD — שאלות על התאמה לדגם, הזמנות מיוחדות ותיקונים.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@400;700;800&family=Oswald:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section class="section">
+  <div class="wrap">
+    <p class="eyebrow">Get In Touch</p>
+    <h1>דברו איתנו</h1>
+    <p class="lead">
+      לא בטוחים איזו רצועה מתאימה לדגם שלכם? רוצים משהו בהזמנה אישית?
+      או שיש פריט ישן שצריך תפירה מחדש? כתבו לנו.
+    </p>
+
+    <div class="checkout-layout" style="margin-top:34px">
+      <!-- טופס -->
+      <form class="form-card" id="contact-form" novalidate>
+        <h3><span class="step">✉</span> שליחת הודעה</h3>
+        <div class="grid-2">
+          <div>
+            <label for="c-name">שם</label>
+            <input class="input" id="c-name" name="name" required>
+            <span class="err"></span>
+          </div>
+          <div>
+            <label for="c-email">אימייל</label>
+            <input class="input" id="c-email" name="email" type="email" required>
+            <span class="err"></span>
+          </div>
+        </div>
+        <div>
+          <label for="c-topic">נושא</label>
+          <select class="input" id="c-topic" name="topic">
+            <option>התאמה לדגם אופנוע</option>
+            <option>הזמנה אישית</option>
+            <option>תיקון פריט קיים</option>
+            <option>סטטוס הזמנה</option>
+            <option>שיתוף פעולה / סיטונאי</option>
+            <option>אחר</option>
+          </select>
+          <span class="err"></span>
+        </div>
+        <div>
+          <label for="c-msg">ההודעה</label>
+          <textarea class="input" id="c-msg" name="message" rows="6" required></textarea>
+          <span class="err"></span>
+        </div>
+        <button class="btn block" type="submit">שליחה</button>
+        <p style="font-size:.82rem;color:var(--tx-dark-mute);margin-top:14px">
+          הטופס כרגע אינו מחובר לשרת — ההודעה לא נשלחת בפועל.
+          חיבור לשירות טפסים מוסבר ב־README של הפרויקט.
+        </p>
+      </form>
+
+      <!-- פרטי קשר -->
+      <aside class="summary">
+        <h3>הסדנה</h3>
+        <div class="line"><span>טלפון</span><span id="c-phone"></span></div>
+        <div class="line"><span>אימייל</span><span id="c-mail"></span></div>
+        <div class="line"><span>כתובת</span><span id="c-addr"></span></div>
+        <!-- dir="ltr" כדי שטווח השעות לא יתהפך בכיווניות RTL -->
+        <div class="line"><span>ימים א׳–ה׳</span><span dir="ltr">09:00–18:00</span></div>
+        <div class="line"><span>יום ו׳</span><span dir="ltr">09:00–13:00</span></div>
+        <p class="note">
+          ביקור בסדנה בתיאום מראש. אפשר גם פשוט להתקשר —
+          בדרך כלל מישהו עונה, אלא אם הוא באמצע תפר.
+        </p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  $('#c-phone').innerHTML = `<a href="tel:${STORE.phone}">${STORE.phone}</a>`;
+  $('#c-mail').innerHTML  = `<a href="mailto:${STORE.email}">${STORE.email}</a>`;
+  $('#c-addr').textContent = STORE.address;
+
+  const form = $('#contact-form');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    let ok = true;
+
+    $$('[required]', form).forEach(input => {
+      const box = input.parentElement.querySelector('.err');
+      let msg = '';
+      if (!input.value.trim()) msg = 'שדה חובה';
+      else if (input.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(input.value))
+        msg = 'כתובת אימייל לא תקינה';
+      box.textContent = msg;
+      if (msg) { input.setAttribute('aria-invalid', 'true'); ok = false; }
+      else input.removeAttribute('aria-invalid');
+    });
+
+    if (!ok) { toast('חלק מהפרטים חסרים'); return; }
+    form.reset();
+    toast('ההודעה נקלטה. נחזור אליכם בהקדם.');
+  });
+});
+</script>
+</body>
+</html>
