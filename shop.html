@@ -104,7 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const qs = new URLSearchParams();
       if (activeCat !== 'all') qs.set('cat', activeCat);
       if (activeGroup) qs.set('group', activeGroup);
-      history.replaceState(null, '', qs.toString() ? '?' + qs : location.pathname);
+      // עדכון הכתובת נכשל כשפותחים את הקובץ ישירות (file://) — לא קריטי, ממשיכים
+      try {
+        history.replaceState(null, '', qs.toString() ? '?' + qs : location.pathname);
+      } catch { /* file:// */ }
       buildFilters();
       render();
     }));
